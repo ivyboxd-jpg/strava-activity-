@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Strava Activity</title>
+    <style>
+        :root {
+            --bg-black: #000000;
+            --bg-card: #121212;
+            --text-white: #FFFFFF;
+            --text-gray: #B0B0B0;
+            --strava-orange: #FC4C02;
+            --strava-blue-fill: #3979B6;
+            --border-dark: #2C2C2E;
+            --font-stack: "Maison Neue", "Helvetica Neue", Helvetica, Arial, -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-black);
+            color: var(--text-white);
+            font-family: var(--font-stack);
+            font-size: 15px;
+            overflow-x: hidden;
+            display: flex;
+            justify-content: center;
+        }
+
+        .mobile-wrapper {
+            width: 100%;
+            max-width: 480px;
+            background: var(--bg-black);
+            min-height: 100vh;
+            position: relative;
+            padding-bottom: 80px;
+        }
+
+        /* HEADER - PROPER STRAVA LOGO */
+        .header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 16px 0;
+            background: var(--bg-black);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .strava-logo-svg {
+            height: 20px;
+            width: auto;
+        }
+
+        /* MAP SECTION */
+        .map-container {
+            width: 100%;
+            height: 400px;
+            background-color: #A4C8EB;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .land-mass {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: #EAEAEA;
+            clip-path: polygon(0 0, 100% 0, 100% 70%, 70% 80%, 30% 75%, 0 85%);
+            opacity: 0.8;
+        }
+
+        svg.map-route {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10;
+        }
+
+        .heart-path {
+            fill: none;
+            stroke: var(--strava-orange);
+            stroke-width: 6;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            filter: drop-shadow(0px 2px 3px rgba(0,0,0,0.3));
+            stroke-dasharray: 1200;
+            stroke-dashoffset: 1200;
+            animation: drawHeart 2.5s ease-out forwards;
+        }
+
+        @keyframes drawHeart {
+            to { stroke-dashoffset: 0; }
+        }
+
+        .map-overlay-icon {
+            position: absolute;
+            bottom: 16px;
+            right: 16px;
+            width: 40px;
+            height: 40px;
+            background: #222;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 20;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+        }
+
+        /* CONTENT SECTION */
+        .content {
+            padding: 16px;
+        }
+
+        .user-row {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+
+        .avatar-img {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: bold;
+            color: white;
+            margin-right: 12px;
+            border: 2px solid #333;
+        }
+
+        .user-meta {
+            margin-top: 4px;
+        }
+
+        .user-meta h2 {
+            font-size: 15px;
+            font-weight: 700;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .user-meta .pro-badge {
+            background: var(--strava-orange);
+            color: white;
+            font-size: 9px;
+            padding: 1px 4px;
+            border-radius: 2px;
+            margin-left: 6px;
+            text-transform: uppercase;
+        }
+
+        .user-meta p {
+            font-size: 12px;
+            color: var(--text-gray);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .activity-title {
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 24px;
+            line-height: 1.1;
+            letter-spacing: -0.5px;
+        }
+
+        .notification-box {
+            background: #1C1C1E;
+            border-radius: 8px;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 30px;
+        }
+
+        .kudos-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .kudos-badge-icon {
+            width: 36px;
+            height: 36px;
+        }
+
+        .notification-text {
+            font-size: 13px;
+            font-weight: 500;
+            color: #eee;
+        }
+
+        .view-btn {
+            background: var(--strava-orange);
+            color: white;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 6px 14px;
+            border-radius: 16px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px 10px;
+            margin-bottom: 30px;
+        }
+
+        .stat-item h4 {
+            font-size: 12px;
+            color: var(--text-gray);
+            margin-bottom: 2px;
+            font-weight: 400;
+        }
+
+        .stat-item .value {
+            font-size: 26px;
+            font-weight: 700;
+            color: white;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .ai-section {
+            background: #1C1C1E;
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+        }
+
+        .ai-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .ai-desc {
+            font-size: 14px;
+            line-height: 1.5;
+            color: #ccc;
+        }
+
+        .ai-highlight {
+            color: white;
+            font-weight: 600;
+        }
+
+        .chart-header {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .info-icon {
+            width: 20px;
+            height: 20px;
+            border: 1px solid var(--text-gray);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: var(--text-gray);
+        }
+
+        .chart-box {
+            background: #1C1C1E;
+            height: 200px;
+            margin-bottom: 8px;
+            position: relative;
+            border-radius: 0;
+            overflow: hidden;
+        }
+
+        .chart-labels {
+            display: flex;
+            justify-content: space-between;
+            padding: 0 10px;
+            font-size: 11px;
+            color: var(--text-gray);
+            margin-bottom: 30px;
+        }
+
+        /* PACE CHART SECTION */
+        .pace-section {
+            margin-bottom: 30px;
+        }
+
+        .pace-chart-box {
+            background: #1C1C1E;
+            height: 180px;
+            margin-bottom: 8px;
+            position: relative;
+            border-radius: 0;
+            overflow: hidden;
+            padding: 20px 10px;
+        }
+
+        .list-stat-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 14px 0;
+            border-bottom: 1px solid #2C2C2E;
+            font-size: 14px;
+        }
+
+        .list-label { color: var(--text-gray); }
+        .list-val { font-weight: 600; }
+
+        /* BOTTOM FIXED BAR - KUDOS ONLY */
+        .bottom-actions {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            max-width: 480px;
+            width: 100%;
+            background: #121212;
+            border-top: 1px solid #2C2C2E;
+            padding: 12px 16px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 200;
+        }
+
+        .action-icon {
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="mobile-wrapper">
+
+    <!-- HEADER: PROPER STRAVA LOGO -->
+    <header class="header">
+        <svg class="strava-logo-svg" viewBox="0 0 432 100" xmlns="http://www.w3.org/2000/svg">
+            <path fill="#FFFFFF" d="M107.6 44.4l-15.5 35.6h-15l15.5-35.6h-14l-9 20.7l-9-20.7h-15l15.5 35.6h-15L30.6 44.4h15l-9 20.7l9 20.7l9-20.7l9-20.7h15l-9 20.7l9 20.7l9-20.7l9-20.7h15.5zm56.6 0h-14.4l-13.8 31.7l-13.8-31.7h-14.4l20.8 47.8h14.4l20.8-47.8zm44.9 35.6l-8.7-19.9h-11.6l8.7 19.9h-14.4l-20.8-47.8h14.4l13.8 31.7l13.8-31.7h14.4l-20.8 47.8h11.6zm44.9 0l-8.7-19.9h-11.6l8.7 19.9h-14.4l-20.8-47.8h14.4l13.8 31.7l13.8-31.7h14.4L254 80h11.6zm67.4-35.6h-14.4l-13.8 31.7l-13.8-31.7h-14.4l20.8 47.8h14.4l20.8-47.8zm44.9 35.6l-8.7-19.9h-11.6l8.7 19.9h-14.4l-20.8-47.8h14.4l13.8 31.7l13.8-31.7h14.4l-20.8 47.8h11.6z"/>
+        </svg>
+    </header>
+
+    <!-- MAP: Heart Shape -->
+    <div class="map-container">
+        <div class="land-mass"></div>
+        
+        <svg class="map-route" viewBox="0 0 200 200" preserveAspectRatio="xMidYMid slice">
+            <path class="heart-path" d="
+                M 100 70 
+                C 100 70, 95 50, 75 50 
+                C 50 50, 20 80, 20 110 
+                C 20 150, 70 180, 100 195 
+                C 130 180, 180 150, 180 110 
+                C 180 80, 150 50, 125 50 
+                C 105 50, 100 70, 100 70"
+            />
+        </svg>
+
+        <div class="map-overlay-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="white" stroke="none">
+                <polygon points="5 3 19 12 5 21 5 3"></polygon>
+            </svg>
+        </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="content">
+
+        <!-- User Info -->
+        <div class="user-row">
+            <div class="avatar-img">N</div>
+            <div class="user-meta">
+                <h2>niv <span class="pro-badge">PRO</span></h2>
+                <p>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                    February 19, 2026 at 7:00 AM · Gandhidham
+                </p>
+            </div>
+        </div>
+
+        <h1 class="activity-title">Loving Her - 9 Month Effort</h1>
+
+        <!-- Kudos Badge Notification -->
+        <div class="notification-box">
+            <div class="kudos-group">
+                <svg class="kudos-badge-icon" viewBox="0 0 100 100" fill="none">
+                    <path d="M50 5 L90 25 L90 75 L50 95 L10 75 L10 25 Z" fill="none" stroke="#e0e0e0" stroke-width="3"/>
+                    <path d="M50 10 L85 28 L85 72 L50 90 L15 72 L15 28 Z" fill="white"/>
+                    <text x="50" y="65" text-anchor="middle" font-weight="bold" font-size="40" fill="#FC4C02">9</text>
+                </svg>
+                <div class="notification-text">Kudos on your 9 month activity!</div>
+            </div>
+            <button class="view-btn">View</button>
+        </div>
+
+        <!-- Main Stats Grid -->
+        <div class="stats-grid">
+            <div class="stat-item">
+                <h4>Distance</h4>
+                <div class="value">2,083 <span style="font-size:16px; color:#B0B0B0;">km</span></div>
+            </div>
+            <div class="stat-item">
+                <h4>Moving Time</h4>
+                <div class="value">276d 0h</div>
+            </div>
+            <div class="stat-item">
+                <h4>Max Heart Rate</h4>
+                <div class="value">164 <span style="font-size:16px; color:#B0B0B0;">bpm</span></div>
+            </div>
+            <div class="stat-item">
+                <h4>Relative Effort</h4>
+                <div class="value">Massive</div>
+            </div>
+        </div>
+
+        <!-- Athlete Intelligence -->
+        <div class="ai-section">
+            <div class="ai-header">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="#FC4C02"><path d="M12 2L2 7l10 5 10-5-10-5zm0 9l2.5-1.25L12 8.5l-2.5 1.25L12 11zm0 2.5l-5-2.5-5 2.5L12 22l10-8.5-5-2.5-5 2.5z"/></svg>
+                <span style="color:#eee">Athlete Intelligence</span>
+            </div>
+            <p class="ai-desc">
+                <span class="ai-highlight">Incredible consistency.</span> You maintained a steady stream of affection for 9 months, hitting a PR in "Voice Notes sent". Your heart rate data indicates excitement levels typically reserved for sprints, sustained over a marathon distance.
+            </p>
+        </div>
+
+        <!-- Heart Rate Chart -->
+        <div class="chart-header">
+            <span>Heart Rate</span>
+            <div class="info-icon">i</div>
+        </div>
+        
+        <div class="chart-box">
+            <svg width="100%" height="100%" preserveAspectRatio="none">
+                <line x1="0" y1="50" x2="100%" y2="50" stroke="#333" stroke-width="1"/>
+                <line x1="0" y1="100" x2="100%" y2="100" stroke="#333" stroke-width="1"/>
+                <line x1="0" y1="150" x2="100%" y2="150" stroke="#333" stroke-width="1"/>
+                <path d="M0,200 
+                         L10,140 L20,160 L30,120 L40,130 
+                         L50,100 L60,110 L70,80 L80,90 
+                         L90,60 L100,50 L110,70 L120,40 
+                         L130,50 L140,30 L150,40 L160,20 
+                         L170,40 L180,10 L190,30 L200,0 
+                         L200,200 Z" 
+                      fill="#3979B6" fill-opacity="0.8" />
+            </svg>
+        </div>
+        <div class="chart-labels">
+            <span>May 2025</span>
+            <span>Sep 2025</span>
+            <span>Feb 2026</span>
+        </div>
+
+        <!-- PACE CHART -->
+        <div class="pace-section">
+            <div class="chart-header">
+                <span>Pace</span>
+                <div class="info-icon">i</div>
+            </div>
+            
+            <div class="pace-chart-box">
+                <svg width="100%" height="100%" viewBox="0 0 300 140" preserveAspectRatio="none">
+                    <!-- Grid lines -->
+                    <line x1="0" y1="35" x2="300" y2="35" stroke="#2a2a2a" stroke-width="1"/>
+                    <line x1="0" y1="70" x2="300" y2="70" stroke="#2a2a2a" stroke-width="1"/>
+                    <line x1="0" y1="105" x2="300" y2="105" stroke="#2a2a2a" stroke-width="1"/>
+                    
+                    <!-- Orange line showing consistent pace -->
+                    <path d="M0,60 L30,55 L60,58 L90,52 L120,56 L150,54 L180,57 L210,53 L240,55 L270,52 L300,54" 
+                          fill="none" stroke="#FC4C02" stroke-width="3" stroke-linecap="round"/>
+                    
+                    <!-- Data points -->
+                    <circle cx="0" cy="60" r="4" fill="#FC4C02"/>
+                    <circle cx="30" cy="55" r="4" fill="#FC4C02"/>
+                    <circle cx="60" cy="58" r="4" fill="#FC4C02"/>
+                    <circle cx="90" cy="52" r="4" fill="#FC4C02"/>
+                    <circle cx="120" cy="56" r="4" fill="#FC4C02"/>
+                    <circle cx="150" cy="54" r="4" fill="#FC4C02"/>
+                    <circle cx="180" cy="57" r="4" fill="#FC4C02"/>
+                    <circle cx="210" cy="53" r="4" fill="#FC4C02"/>
+                    <circle cx="240" cy="55" r="4" fill="#FC4C02"/>
+                    <circle cx="270" cy="52" r="4" fill="#FC4C02"/>
+                    <circle cx="300" cy="54" r="4" fill="#FC4C02"/>
+                </svg>
+            </div>
+            <div class="chart-labels">
+                <span>May</span>
+                <span>Aug</span>
+                <span>Nov</span>
+                <span>Feb</span>
+            </div>
+        </div>
+
+        <!-- Bottom List Stats -->
+        <div class="list-stat-row">
+            <span class="list-label">Avg Pace</span>
+            <span class="list-val">Constant/Intense</span>
+        </div>
+        <div class="list-stat-row">
+            <span class="list-label">Avg Heart Rate</span>
+            <span class="list-val">87 bpm</span>
+        </div>
+        <div class="list-stat-row">
+            <span class="list-label">Max Elevation</span>
+            <span class="list-val">Cloud 9</span>
+        </div>
+        <div class="list-stat-row" style="border-bottom:none;">
+            <span class="list-label">Device</span>
+            <span class="list-val">Heart v1.0</span>
+        </div>
+
+    </div>
+
+    <!-- BOTTOM ACTIONS - KUDOS ONLY -->
+    <div class="bottom-actions">
+        <div class="action-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="#FC4C02" stroke="#FC4C02">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+            </svg>
+            <span>147</span>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>
