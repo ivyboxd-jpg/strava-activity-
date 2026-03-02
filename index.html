@@ -99,9 +99,7 @@
             stroke-linecap: round;
             stroke-linejoin: round;
             filter: drop-shadow(0px 2px 4px rgba(0,0,0,0.4));
-            /* Dash array set to cover the full length */
             stroke-dasharray: 1200;
-            /* Start completely hidden */
             stroke-dashoffset: 1200;
         }
 
@@ -147,7 +145,7 @@
         .user-row {
             display: flex;
             align-items: center;
-            margin-bottom: 24px;
+            margin-bottom: 20px;
         }
 
         .avatar-img {
@@ -155,7 +153,7 @@
             height: 44px;
             border-radius: 50%;
             object-fit: cover;
-            object-position: center; /* Ensures both cats stay in the center of the circle */
+            object-position: center;
             margin-right: 12px;
             box-shadow: 0 0 0 1px #333;
         }
@@ -189,6 +187,43 @@
             display: flex;
             align-items: center;
             gap: 4px;
+        }
+
+        /* Social Action Bar */
+        .action-bar {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        
+        .action-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #1C1C1E;
+            border: 1px solid #2C2C2E;
+            cursor: pointer;
+            transition: transform 0.1s, background 0.2s;
+        }
+        
+        .action-btn:active {
+            transform: scale(0.9);
+            background: #2C2C2E;
+        }
+        
+        .action-icon {
+            width: 20px;
+            height: 20px;
+            color: white;
+            transition: fill 0.2s, stroke 0.2s, transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        .heart-icon.liked {
+            fill: var(--strava-orange);
+            stroke: var(--strava-orange);
         }
 
         /* Kudos Badge Notification */
@@ -299,6 +334,57 @@
         .ai-highlight {
             color: white;
             font-weight: 600;
+        }
+
+        /* Achievements / Medals Section */
+        .achievements-row {
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            padding-bottom: 8px;
+            margin-bottom: 30px;
+            scrollbar-width: none; /* Firefox */
+        }
+        .achievements-row::-webkit-scrollbar {
+            display: none; /* Chrome/Safari */
+        }
+        
+        .achievement-card {
+            background: #1C1C1E;
+            border: 1px solid #2C2C2E;
+            border-radius: 12px;
+            padding: 16px 12px;
+            min-width: 110px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            cursor: pointer;
+            flex-shrink: 0;
+            transition: background-color 0.2s;
+        }
+        
+        .achievement-card:active {
+            background: #2C2C2E;
+        }
+        
+        .achievement-icon {
+            width: 40px;
+            height: 40px;
+            margin-bottom: 10px;
+            filter: drop-shadow(0px 2px 4px rgba(0,0,0,0.5));
+        }
+        
+        .ach-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 2px;
+        }
+        
+        .ach-date {
+            font-size: 12px;
+            color: var(--text-gray);
         }
 
         /* Charts Section */
@@ -523,18 +609,12 @@
         <div class="land-mass"></div>
         
         <svg class="map-route" viewBox="0 0 200 200" preserveAspectRatio="xMidYMid meet">
-            <!-- Symmetrical heart bezier curve -->
             <path id="heart-track" class="heart-path" d="M100,165 C100,165 25,115 25,60 C25,25 75,25 100,55 C125,25 175,25 175,60 C175,115 100,165 100,165 Z" />
-            
-            <!-- Map Route Start Point (Green) -->
             <circle cx="100" cy="55" r="4" fill="#66CC33" stroke="#fff" stroke-width="2" />
-            
-            <!-- Map Route End Point (Checkered/Black) -->
             <circle cx="100" cy="165" r="4.5" fill="#000" stroke="#fff" stroke-width="2" />
             <circle cx="100" cy="165" r="1.5" fill="#fff" />
         </svg>
 
-        <!-- Play Button -->
         <div class="map-overlay-icon" id="play-btn">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="white" stroke="none">
                 <polygon points="6 3 20 12 6 21 6 3"></polygon>
@@ -549,15 +629,31 @@
         <h1 class="activity-title">9 Month Effort</h1>
 
         <div class="user-row">
-            <!-- Look right here! This calls upon your local image named "cats.jpg" -->
+            <!-- Your Kittens! -->
             <img class="avatar-img" src="https://i.postimg.cc/GmPYs4C0/IMG-9101.jpg" alt="two silly cats">
             
             <div class="user-meta">
-                <h2>niv & aaradhya<span class="pro-badge">PRO</span></h2>
+                <h2>niv & aaradhya <span class="pro-badge">PRO</span></h2>
                 <p>
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
-                    March 2, 2026 at 7:00 AM · Earth
+                    March 2, 2026 at 7:00 AM 
                 </p>
+            </div>
+        </div>
+
+        <!-- Social Action Bar -->
+        <div class="action-bar">
+            <!-- Heart Button (Clickable!) -->
+            <div class="action-btn" onclick="toggleHeart(this)">
+                <svg class="action-icon heart-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+            </div>
+            <!-- Comment Button -->
+            <div class="action-btn" onclick="showModal('Comments Disabled', 'Too many people are jealous of this relationship, so we had to turn off comments.')">
+                <svg class="action-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+            </div>
+            <!-- Share Button -->
+            <div class="action-btn" onclick="showModal('Share', 'Link copied to clipboard! Share the love.')">
+                <svg class="action-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path><polyline points="16 6 12 2 8 6"></polyline><line x1="12" y1="2" x2="12" y2="15"></line></svg>
             </div>
         </div>
 
@@ -571,7 +667,6 @@
                 </svg>
                 <div class="notification-text">Kudos on your 9 month activity!</div>
             </div>
-            <!-- Clickable View Button -->
             <button class="view-btn" onclick="showModal('Kudos Details', '144 beautiful people supported this massive 9-month effort. You are an absolute legend!')">View</button>
         </div>
 
@@ -606,7 +701,6 @@
         <!-- Athlete Intelligence Text -->
         <div class="ai-section">
             <div class="ai-header">
-                <!-- UPDATED: Strava Athlete Intelligence Logo -->
                 <svg width="18" height="18" viewBox="0 0 100 100" fill="none">
                     <rect width="100" height="100" rx="15" fill="#FC4C02"/>
                     <polygon points="15,60 40,10 60,50 44,50 40,42 31,60" fill="#FFFFFF"/>
@@ -619,10 +713,44 @@
             </p>
         </div>
 
+        <!-- ACHIEVEMENTS / MEDALS -->
+        <div class="chart-header">
+            <span>Achievements</span>
+        </div>
+        <div class="achievements-row">
+            <!-- Gold PR Medal -->
+            <div class="achievement-card" onclick="showModal('1st Place Partner', 'Awarded for setting a new Personal Record for most cuddles in a 9-month period.')">
+                <svg viewBox="0 0 24 24" class="achievement-icon">
+                    <circle cx="12" cy="12" r="10" fill="#F2C94C"/>
+                    <path d="M12 7l1.5 4.5H18l-3.5 2.5 1.5 4.5-4-3-4 3 1.5-4.5-3.5-2.5h4.5z" fill="#D4A11E"/>
+                    <text x="12" y="15" text-anchor="middle" font-weight="900" font-size="7" fill="#fff" style="text-shadow: 0px 1px 2px rgba(0,0,0,0.6);">PR</text>
+                </svg>
+                <div class="ach-title">1st Place</div>
+                <div class="ach-date">Best Partner</div>
+            </div>
+            <!-- Fire Streak Badge -->
+            <div class="achievement-card" onclick="showModal('Endurance Streak', '276 Days of continuous communication and unwavering support without missing a single day.')">
+                <svg viewBox="0 0 24 24" class="achievement-icon">
+                    <path d="M12 2c0 0-4 4-4 9a4 4 0 0 0 8 0c0-5-4-9-4-9z" fill="#FC4C02"/>
+                    <path d="M12 8c0 0-2 2-2 4a2 2 0 0 0 4 0c0-2-2-4-2-4z" fill="#FFB08F"/>
+                </svg>
+                <div class="ach-title">276 Day</div>
+                <div class="ach-date">Streak</div>
+            </div>
+            <!-- Local Legend Badge -->
+            <div class="achievement-card" onclick="showModal('Local Legend', 'You spend more time in their heart than anyone else. Nobody even comes close.')">
+                <svg viewBox="0 0 24 24" class="achievement-icon">
+                    <path d="M12 3C7 3 3 7 3 12s4 9 9 9 9-4 9-9-4-9-9-9z" fill="#9C36B5"/>
+                    <path d="M7 12l3 3 7-7" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <div class="ach-title">Local Legend</div>
+                <div class="ach-date">Top 1%</div>
+            </div>
+        </div>
+
         <!-- Heart Rate Chart -->
         <div class="chart-header">
             <span>Heart Rate</span>
-            <!-- Interactive Info Icon -->
             <div class="info-icon" onclick="showModal('Heart Rate Insight', 'Your heart rate indicates extreme excitement and intense butterflies in the stomach continuously for 9 months straight.')">i</div>
         </div>
         
@@ -651,7 +779,6 @@
         <div style="margin-top: 10px;">
             <div class="chart-header">
                 <span>Pace</span>
-                <!-- Interactive Info Icon -->
                 <div class="info-icon" onclick="showModal('Pace Breakdown', 'Your pace shows you were 100% committed every single day without missing a beat. Supreme consistency across the board.')">i</div>
             </div>
             
@@ -724,8 +851,8 @@
                 <span class="list-val">Swept off feet</span>
             </div>
             <div class="list-stat-row">
-                <span class="list-label">Temperature</span>
-                <span class="list-val">98.6°F (Lovesick)</span>
+                <span class="list-label">Gear</span>
+                <span class="list-val">Matching Hoodies</span>
             </div>
             <div class="list-stat-row">
                 <span class="list-label">Elapsed Time</span>
@@ -778,35 +905,39 @@
 </div>
 
 <script>
-    // --- ANIMATION LOGIC (Refined for Reliability) ---
+    // --- ANIMATION LOGIC ---
     document.addEventListener('DOMContentLoaded', () => {
         const playBtn = document.getElementById('play-btn');
         const heartPath = document.getElementById('heart-track');
 
         function playAnimation() {
-            // 1. Reset the transition and dash offset to 'hidden' (1200)
             heartPath.style.transition = 'none';
             heartPath.style.strokeDashoffset = '1200';
-            
-            // 2. Force a browser reflow/repaint so it registers the reset
             heartPath.getBoundingClientRect(); 
-
-            // 3. Re-enable transition and set dash offset to 'visible' (0)
-            // Small timeout ensures the previous reset happens first
             setTimeout(() => {
                 heartPath.style.transition = 'stroke-dashoffset 2.5s ease-out';
                 heartPath.style.strokeDashoffset = '0';
             }, 50);
         }
 
-        // Play automatically on load
         setTimeout(playAnimation, 500);
 
-        // Play when button is clicked
         playBtn.addEventListener('click', () => {
             playAnimation();
         });
     });
+
+    // --- LIKE BUTTON LOGIC ---
+    function toggleHeart(el) {
+        const icon = el.querySelector('.heart-icon');
+        icon.classList.toggle('liked');
+        
+        // Pop animation
+        if(icon.classList.contains('liked')) {
+            icon.style.transform = 'scale(1.25)';
+            setTimeout(() => icon.style.transform = 'scale(1)', 200);
+        }
+    }
 
     // --- MODAL LOGIC ---
     function showModal(title, desc) {
@@ -819,7 +950,6 @@
         document.getElementById('dynamic-modal').classList.remove('active');
     }
 
-    // Close modal if clicked outside the card
     document.getElementById('dynamic-modal').addEventListener('click', function(e) {
         if(e.target === this) {
             closeModal();
