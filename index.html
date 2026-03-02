@@ -99,13 +99,10 @@
             stroke-linecap: round;
             stroke-linejoin: round;
             filter: drop-shadow(0px 2px 4px rgba(0,0,0,0.4));
+            /* Dash array set to cover the full length */
             stroke-dasharray: 1200;
+            /* Start completely hidden */
             stroke-dashoffset: 1200;
-        }
-
-        @keyframes drawHeart {
-            from { stroke-dashoffset: 1200; }
-            to { stroke-dashoffset: 0; }
         }
 
         .map-overlay-icon {
@@ -158,6 +155,7 @@
             height: 44px;
             border-radius: 50%;
             object-fit: cover;
+            object-position: center; /* Ensures both cats stay in the center of the circle */
             margin-right: 12px;
             box-shadow: 0 0 0 1px #333;
         }
@@ -358,6 +356,35 @@
             padding-top: 20px;
         }
 
+        /* Splits Table */
+        .splits-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }
+        
+        .splits-table tr {
+            border-bottom: 1px solid #2C2C2E;
+        }
+        
+        .splits-table td {
+            padding: 12px 0;
+            font-size: 14px;
+        }
+        
+        .split-num {
+            color: var(--text-gray);
+            font-weight: 500;
+            width: 30px;
+        }
+        
+        .split-val {
+            text-align: right;
+            font-family: monospace;
+            font-size: 14px;
+            color: #fff;
+        }
+
         /* Bottom List Stats */
         .list-stats-container {
             margin-top: 10px;
@@ -375,7 +402,7 @@
         .list-label { color: var(--text-gray); }
         .list-val { font-weight: 600; }
 
-        /* NEW Segments Section */
+        /* Segments Section */
         .segments-section {
             margin-top: 20px;
         }
@@ -486,7 +513,7 @@
 
 <div class="mobile-wrapper">
 
-    <!-- HEADER: Standard Orange Strava Logo directly imported -->
+    <!-- HEADER -->
     <header class="header">
         <img class="strava-logo-img" src="https://upload.wikimedia.org/wikipedia/commons/c/cb/Strava_Logo.svg" alt="STRAVA">
     </header>
@@ -507,7 +534,7 @@
             <circle cx="100" cy="165" r="1.5" fill="#fff" />
         </svg>
 
-        <!-- Working Play Button -->
+        <!-- Play Button -->
         <div class="map-overlay-icon" id="play-btn">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="white" stroke="none">
                 <polygon points="6 3 20 12 6 21 6 3"></polygon>
@@ -522,14 +549,14 @@
         <h1 class="activity-title">9 Month Effort</h1>
 
         <div class="user-row">
-            <!-- Silly Cat Profile Picture Added -->
-            <img class="avatar-img" src="https://images.unsplash.com/photo-1533738363-b7f9aef128ce?q=80&w=200&auto=format&fit=crop" alt="niv profile picture">
+            <!-- Look right here! This calls upon your local image named "cats.jpg" -->
+            <img class="avatar-img" src="cats.jpg" alt="two silly cats">
             
             <div class="user-meta">
                 <h2>niv <span class="pro-badge">PRO</span></h2>
                 <p>
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
-                    February 19, 2026 at 7:00 AM · Earth
+                    March 2, 2026 at 7:00 AM · Earth
                 </p>
             </div>
         </div>
@@ -579,7 +606,12 @@
         <!-- Athlete Intelligence Text -->
         <div class="ai-section">
             <div class="ai-header">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="#FC4C02"><path d="M12 2L2 7l10 5 10-5-10-5zm0 9l2.5-1.25L12 8.5l-2.5 1.25L12 11zm0 2.5l-5-2.5-5 2.5L12 22l10-8.5-5-2.5-5 2.5z"/></svg>
+                <!-- UPDATED: Strava Athlete Intelligence Logo -->
+                <svg width="18" height="18" viewBox="0 0 100 100" fill="none">
+                    <rect width="100" height="100" rx="15" fill="#FC4C02"/>
+                    <polygon points="15,60 40,10 60,50 44,50 40,42 31,60" fill="#FFFFFF"/>
+                    <polygon points="40,50 56,50 60,58 69,40 85,40 60,90" fill="#FFB08F"/>
+                </svg>
                 <span style="color:#eee">Athlete Intelligence</span>
             </div>
             <p class="ai-desc">
@@ -610,9 +642,9 @@
             </svg>
         </div>
         <div class="chart-labels">
-            <span>May 2025</span>
-            <span>Sep 2025</span>
-            <span>Feb 2026</span>
+            <span>June 2025</span>
+            <span>Oct 2025</span>
+            <span>March 2026</span>
         </div>
 
         <!-- PACE CHART -->
@@ -646,11 +678,35 @@
                 </svg>
             </div>
             <div class="chart-labels">
-                <span>May</span>
-                <span>Aug</span>
-                <span>Nov</span>
-                <span>Feb</span>
+                <span>Jun</span>
+                <span>Sep</span>
+                <span>Dec</span>
+                <span>Mar</span>
             </div>
+        </div>
+
+        <!-- Splits Section -->
+        <div style="margin-top: 20px;">
+            <div class="chart-header">
+                <span>Splits</span>
+            </div>
+            <table class="splits-table">
+                <tr>
+                    <td class="split-num">1</td>
+                    <td style="color:white;">First Trimester (Jun-Aug)</td>
+                    <td class="split-val">Honeymoon Phase</td>
+                </tr>
+                <tr>
+                    <td class="split-num">2</td>
+                    <td style="color:white;">Second Trimester (Sep-Nov)</td>
+                    <td class="split-val">Comfort Zone</td>
+                </tr>
+                <tr>
+                    <td class="split-num">3</td>
+                    <td style="color:white;">Third Trimester (Dec-Feb)</td>
+                    <td class="split-val">True Love</td>
+                </tr>
+            </table>
         </div>
 
         <!-- Detailed List Stats -->
@@ -667,13 +723,21 @@
                 <span class="list-label">Avg Speed</span>
                 <span class="list-val">Swept off feet</span>
             </div>
+            <div class="list-stat-row">
+                <span class="list-label">Temperature</span>
+                <span class="list-val">98.6°F (Lovesick)</span>
+            </div>
+            <div class="list-stat-row">
+                <span class="list-label">Elapsed Time</span>
+                <span class="list-val">Forever to go</span>
+            </div>
             <div class="list-stat-row" style="border-bottom:none;">
                 <span class="list-label">Device</span>
                 <span class="list-val">Heart v1.0</span>
             </div>
         </div>
 
-        <!-- ADDED MORE TO THE WEBSITE: Segments -->
+        <!-- Segments Section -->
         <div class="segments-section">
             <div class="chart-header">
                 <span>Segments</span>
@@ -714,31 +778,37 @@
 </div>
 
 <script>
-    // --- Heart Draw Animation Logic ---
+    // --- ANIMATION LOGIC (Refined for Reliability) ---
     document.addEventListener('DOMContentLoaded', () => {
         const playBtn = document.getElementById('play-btn');
         const heartPath = document.getElementById('heart-track');
 
-        // Function to trigger the animation
-        function triggerDraw() {
-            // Remove the animation property entirely
-            heartPath.style.animation = 'none';
-            // Force browser reflow to reset state
-            void heartPath.offsetWidth;
-            // Re-apply the animation
-            heartPath.style.animation = 'drawHeart 2.5s ease-out forwards';
+        function playAnimation() {
+            // 1. Reset the transition and dash offset to 'hidden' (1200)
+            heartPath.style.transition = 'none';
+            heartPath.style.strokeDashoffset = '1200';
+            
+            // 2. Force a browser reflow/repaint so it registers the reset
+            heartPath.getBoundingClientRect(); 
+
+            // 3. Re-enable transition and set dash offset to 'visible' (0)
+            // Small timeout ensures the previous reset happens first
+            setTimeout(() => {
+                heartPath.style.transition = 'stroke-dashoffset 2.5s ease-out';
+                heartPath.style.strokeDashoffset = '0';
+            }, 50);
         }
 
-        // Play the animation automatically on page load
-        setTimeout(triggerDraw, 400);
+        // Play automatically on load
+        setTimeout(playAnimation, 500);
 
-        // Play the animation when the user clicks the play button
+        // Play when button is clicked
         playBtn.addEventListener('click', () => {
-            triggerDraw();
+            playAnimation();
         });
     });
 
-    // --- Modal Logic ---
+    // --- MODAL LOGIC ---
     function showModal(title, desc) {
         document.getElementById('modal-title').innerText = title;
         document.getElementById('modal-desc').innerText = desc;
